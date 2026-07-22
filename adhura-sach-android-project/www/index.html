@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>THAT NIGHT</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital@0;1&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<style>
+  /* ===================================================
+     RESET / BASE
+  =================================================== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  #menu-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ===================================================
+     BACKGROUND LAYERS
+  =================================================== */
+  #bg-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transform: translate(-50%, -50%) scale(1);
+    animation: breathe 15s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes breathe {
+    0%   { transform: translate(-50%, -50%) scale(1); }
+    50%  { transform: translate(-50%, -50%) scale(1.02); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+  }
+
+  /* Dark gradient overlay for readability */
+  #gradient-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 35%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.55) 100%),
+      linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.05) 70%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+  }
+
+  /* Cinematic vignette */
+  #vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 85%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+  }
+
+  /* Subtle bloom near center light source */
+  #bloom {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 62%, rgba(255,230,180,0.10) 0%, rgba(255,230,180,0.04) 25%, rgba(0,0,0,0) 55%);
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  /* Film grain */
+  #grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIyIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIi8+PC9zdmc+");
+    animation: grain-shift 0.4s steps(4) infinite;
+    will-change: transform;
+  }
+
+  @keyframes grain-shift {
+    0%   { transform: translate(0,0); }
+    25%  { transform: translate(-2%,-3%); }
+    50%  { transform: translate(3%,2%); }
+    75%  { transform: translate(-3%,1%); }
+    100% { transform: translate(0,0); }
+  }
+
+  /* ===================================================
+     FOG
+  =================================================== */
+  #fog-layer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 40%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .fog {
+    position: absolute;
+    bottom: -10%;
+    width: 200%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(200,205,215,0.10) 0%, rgba(200,205,215,0.0) 70%);
+    background-size: 50% 100%;
+    background-repeat: repeat-x;
+    opacity: 0.5;
+    filter: blur(6px);
+  }
+
+  .fog1 { animation: drift1 55s linear infinite; }
+  .fog2 { animation: drift2 80s linear infinite reverse; opacity: 0.3; bottom: 0%; }
+
+  @keyframes drift1 {
+    0%   { transform: translateX(-25%); }
+    100% { transform: translateX(0%); }
+  }
+  @keyframes drift2 {
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-25%); }
+  }
+
+  /* ===================================================
+     DUST PARTICLES
+  =================================================== */
+  #particle-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* ===================================================
+     CONTENT / TITLE
+  =================================================== */
+  #content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+  #title-wrap {
+    margin-bottom: clamp(30px, 6vh, 60px);
+  }
+
+  h1#game-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #f2f4f7;
+    font-size: clamp(2.2rem, 8vw, 5.5rem);
+    letter-spacing: 5px;
+    text-shadow:
+      0 0 8px rgba(190, 205, 225, 0.55),
+      0 0 22px rgba(140, 165, 200, 0.35),
+      0 4px 12px rgba(0,0,0,0.8);
+    animation: title-breathe 8s ease-in-out infinite;
+    will-change: text-shadow, opacity;
+    user-select: none;
+  }
+
+  @keyframes title-breathe {
+    0%, 100% {
+      text-shadow:
+        0 0 8px rgba(190, 205, 225, 0.5),
+        0 0 22px rgba(140, 165, 200, 0.3),
+        0 4px 12px rgba(0,0,0,0.8);
+    }
+    50% {
+      text-shadow:
+        0 0 14px rgba(190, 205, 225, 0.75),
+        0 0 32px rgba(140, 165, 200, 0.45),
+        0 4px 12px rgba(0,0,0,0.8);
+    }
+  }
+
+  /* Flicker class toggled rarely via JS */
+  h1#game-title.flicker {
+    animation: title-flicker 0.15s steps(2, end) 2;
+  }
+
+  @keyframes title-flicker {
+    0%   { opacity: 1; }
+    40%  { opacity: 0.55; }
+    60%  { opacity: 0.9; }
+    100% { opacity: 1; }
+  }
+
+  p#game-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: #e8e8e8;
+    opacity: 0.55;
+    font-size: clamp(0.85rem, 2vw, 1.3rem);
+    letter-spacing: 3px;
+    margin-top: 14px;
+    text-transform: uppercase;
+  }
+
+  /* ===================================================
+     BUTTONS
+  =================================================== */
+  #menu-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .menu-btn {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #f5f5f5;
+    background: rgba(15, 15, 18, 0.35);
+    border: 1px solid rgba(255,255,255,0.55);
+    padding: 14px 60px;
+    min-width: 240px;
+    cursor: pointer;
+    position: relative;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease, letter-spacing 0.35s ease;
+    outline: none;
+  }
+
+  .menu-btn:hover,
+  .menu-btn:focus-visible {
+    background: rgba(40, 40, 46, 0.55);
+    border-color: rgba(255,255,255,0.9);
+    box-shadow: 0 0 18px rgba(200, 215, 235, 0.35), 0 0 40px rgba(140,160,190,0.15);
+    transform: scale(1.045);
+    letter-spacing: 3px;
+  }
+
+  .menu-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 0 8px rgba(200,215,235,0.25);
+  }
+
+  /* ===================================================
+     INFO MODAL
+  =================================================== */
+  #modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    padding: 20px;
+  }
+
+  #modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #modal-box {
+    position: relative;
+    max-width: 520px;
+    width: 100%;
+    background: linear-gradient(160deg, rgba(20,20,24,0.92), rgba(10,10,12,0.95));
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 14px;
+    padding: 42px 34px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(150,170,200,0.08);
+    transform: translateY(18px) scale(0.97);
+    transition: transform 0.4s ease;
+  }
+
+  #modal-overlay.active #modal-box {
+    transform: translateY(0) scale(1);
+  }
+
+  #modal-box h2 {
+    font-family: 'Cinzel Decorative', serif;
+    color: #f0f2f5;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  #modal-box p {
+    font-family: 'Cormorant Garamond', serif;
+    color: #dcdcdc;
+    font-size: 1.15rem;
+    line-height: 1.7;
+    letter-spacing: 0.3px;
+  }
+
+  #modal-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: none;
+    border: none;
+    color: #e8e8e8;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  #modal-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  /* ===================================================
+     MISC
+  =================================================== */
+  #sound-toggle {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 20;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(15,15,18,0.35);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    backdrop-filter: blur(3px);
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  #sound-toggle:hover { background: rgba(40,40,46,0.55); transform: scale(1.08); }
+
+  .credit-tag {
+    position: fixed;
+    bottom: 18px;
+    left: 22px;
+    z-index: 20;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.35);
+    user-select: none;
+  }
+
+  @media (max-width: 480px) {
+    .menu-btn { padding: 12px 40px; min-width: 200px; }
+    #modal-box { padding: 32px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="menu-root">
+
+  <!-- Background -->
+  <div id="bg-image"></div>
+  <div id="gradient-overlay"></div>
+  <div id="bloom"></div>
+  <div id="vignette"></div>
+  <div id="grain"></div>
+
+  <!-- Fog -->
+  <div id="fog-layer">
+    <div class="fog fog1"></div>
+    <div class="fog fog2"></div>
+  </div>
+
+  <!-- Dust particles -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Main content -->
+  <div id="content">
+    <div id="title-wrap">
+      <h1 id="game-title">That Night</h1>
+      <p id="game-subtitle">A Psychological Horror Game</p>
+    </div>
+
+    <div id="menu-buttons">
+      <button class="menu-btn" id="btn-play">Play</button>
+      <button class="menu-btn" id="btn-info">Info</button>
+    </div>
+  </div>
+
+  <!-- Sound toggle -->
+  <button id="sound-toggle" title="Toggle Music" aria-label="Toggle Music">&#9835;</button>
+
+  <div class="credit-tag">Blackccio</div>
+
+  <!-- Info Modal -->
+  <div id="modal-overlay">
+    <div id="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button id="modal-close" aria-label="Close">&times;</button>
+      <h2 id="modal-title">About</h2>
+      <p>"That Night" is an upcoming psychological horror game, developed by Indian teenage students in association with Blackccio.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Background music -->
+<audio id="bg-music" loop preload="auto">
+  <source src="menu_theme.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =================================================
+     AUDIO: Background Music
+  ================================================= */
+  const music = document.getElementById('bg-music');
+  const TARGET_VOLUME = 0.4;
+  const FADE_MS = 2000;
+  let musicStarted = false;
+  let musicMuted = false;
+
+  music.volume = 0;
+
+  function fadeInMusic() {
+    const steps = 40;
+    const stepTime = FADE_MS / steps;
+    let currentStep = 0;
+    const fadeInterval = setInterval(() => {
+      currentStep++;
+      music.volume = Math.min(TARGET_VOLUME, (TARGET_VOLUME * currentStep) / steps);
+      if (currentStep >= steps) clearInterval(fadeInterval);
+    }, stepTime);
+  }
+
+  let audioUnlocked = false; // true only once playback has actually begun
+
+  function startMusic() {
+    if (audioUnlocked) return;
+    const playPromise = music.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        audioUnlocked = true;
+        musicStarted = true;
+        fadeInMusic();
+        detachInteractionListeners();
+      }).catch(() => {
+        // Autoplay blocked — listeners stay attached, we'll retry on next tap
+      });
+    } else {
+      // Very old browsers with no promise-based play(): assume it worked
+      audioUnlocked = true;
+      musicStarted = true;
+      fadeInMusic();
+      detachInteractionListeners();
+    }
+  }
+
+  // Try autoplay immediately
+  window.addEventListener('load', startMusic);
+
+  // Fallback: retry on every interaction until playback actually succeeds.
+  // (Not removed after just one attempt — a rejected play() promise resolves
+  // asynchronously, so removing the listener too early can permanently break
+  // the "tap to start" fallback on strict mobile browsers.)
+  const interactionEvents = ['click', 'touchstart', 'keydown'];
+  function firstInteractionHandler() {
+    startMusic();
+  }
+  function detachInteractionListeners() {
+    interactionEvents.forEach(evt => document.removeEventListener(evt, firstInteractionHandler));
+  }
+  interactionEvents.forEach(evt => document.addEventListener(evt, firstInteractionHandler, { passive: true }));
+
+  // Surface load errors visibly, since mobile users often can't check devtools.
+  music.addEventListener('error', () => {
+    console.warn('Menu music failed to load. Check that menu_theme.mp3 sits next to index.html on the server.');
+    const tag = document.querySelector('.credit-tag');
+    if (tag) tag.textContent = 'Blackccio — ⚠ menu_theme.mp3 not found';
+  });
+
+  /* Sound toggle button — also tries to (re)start playback, since on some
+     mobile browsers this tap IS the user's first real interaction. */
+  const soundToggle = document.getElementById('sound-toggle');
+  soundToggle.addEventListener('click', () => {
+    if (!audioUnlocked) {
+      startMusic();
+      return; // first tap just unlocks/starts audio, doesn't mute it
+    }
+    musicMuted = !musicMuted;
+    music.muted = musicMuted;
+    soundToggle.style.opacity = musicMuted ? '0.4' : '1';
+    soundToggle.innerHTML = musicMuted ? '&#9835;&#8203;' : '&#9835;';
+    soundToggle.style.textDecoration = musicMuted ? 'line-through' : 'none';
+  });
+
+  /* =================================================
+     SOUND EFFECTS (hover / click) — fail silently
+  ================================================= */
+  let audioCtx = null;
+  function getCtx() {
+    if (!audioCtx) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        audioCtx = null;
+      }
+    }
+    return audioCtx;
+  }
+
+  // Generate simple soft tones synthetically so no external SFX files are required.
+  function playTone(freq, duration, type, gainPeak) {
+    try {
+      const ctx = getCtx();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(gainPeak, ctx.currentTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration + 0.05);
+    } catch (e) {
+      /* fail silently */
+    }
+  }
+
+  function playHoverSound() {
+    playTone(520, 0.18, 'sine', 0.03);
+  }
+
+  function playClickSound() {
+    playTone(300, 0.22, 'triangle', 0.05);
+  }
+
+  document.querySelectorAll('.menu-btn, #modal-close, #sound-toggle').forEach(el => {
+    el.addEventListener('mouseenter', playHoverSound);
+    el.addEventListener('click', playClickSound);
+  });
+
+  /* =================================================
+     TITLE: occasional flicker
+  ================================================= */
+  const title = document.getElementById('game-title');
+  function scheduleFlicker() {
+    const delay = 20000 + Math.random() * 10000; // 20-30s
+    setTimeout(() => {
+      title.classList.add('flicker');
+      setTimeout(() => title.classList.remove('flicker'), 400);
+      scheduleFlicker();
+    }, delay);
+  }
+  scheduleFlicker();
+
+  /* =================================================
+     NAVIGATION: Play / Info
+  ================================================= */
+  document.getElementById('btn-play').addEventListener('click', () => {
+    setTimeout(() => { window.location.href = "game.html"; }, 180);
+  });
+
+  const modalOverlay = document.getElementById('modal-overlay');
+  const btnInfo = document.getElementById('btn-info');
+  const btnClose = document.getElementById('modal-close');
+
+  function openModal() {
+    modalOverlay.classList.add('active');
+  }
+  function closeModal() {
+    modalOverlay.classList.remove('active');
+  }
+
+  btnInfo.addEventListener('click', openModal);
+  btnClose.addEventListener('click', closeModal);
+
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  /* =================================================
+     DUST PARTICLES (Canvas, lightweight)
+  ================================================= */
+  const canvas = document.getElementById('particle-canvas');
+  const ctx2d = canvas.getContext('2d');
+  let W, H, particles = [];
+  const PARTICLE_COUNT_BASE = 45;
+
+  function resizeCanvas() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createParticles() {
+    particles = [];
+    const count = window.innerWidth < 600 ? Math.floor(PARTICLE_COUNT_BASE * 0.55) : PARTICLE_COUNT_BASE;
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.6 + Math.random() * 1.6,
+        speedY: -(0.05 + Math.random() * 0.15),
+        speedX: (Math.random() - 0.5) * 0.12,
+        opacity: 0.08 + Math.random() * 0.22,
+        drift: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function animateParticles() {
+    ctx2d.clearRect(0, 0, W, H);
+    for (const p of particles) {
+      p.drift += 0.005;
+      p.y += p.speedY;
+      p.x += p.speedX + Math.sin(p.drift) * 0.05;
+
+      if (p.y < -10) {
+        p.y = H + 10;
+        p.x = Math.random() * W;
+      }
+      if (p.x < -10) p.x = W + 10;
+      if (p.x > W + 10) p.x = -10;
+
+      ctx2d.beginPath();
+      ctx2d.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx2d.fillStyle = `rgba(220, 220, 225, ${p.opacity})`;
+      ctx2d.fill();
+    }
+    requestAnimationFrame(animateParticles);
+  }
+
+  resizeCanvas();
+  createParticles();
+  animateParticles();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      resizeCanvas();
+      createParticles();
+    }, 200);
+  });
+
+})();
+</script>
+
+</body>
+</html>
+
