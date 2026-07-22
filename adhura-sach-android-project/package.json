@@ -1,0 +1,16 @@
+{
+  "name": "adhura-sach",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Adhura Sach - horror exploration game (Android wrapper)",
+  "scripts": {
+    "build": "echo \"static www/ folder, nothing to build\""
+  },
+  "dependencies": {
+    "@capacitor/android": "5.7.4",
+    "@capacitor/core": "5.7.4"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "5.7.4"
+  }
+}
